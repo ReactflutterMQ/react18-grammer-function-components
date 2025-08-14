@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../react.development.js"></script>
+    <script src="../react-dom.development.js"></script>
+    <script src="../babel.min.js"></script>
+    <script src="../prop-types.js"></script>
+</head>
+<body>
+    <div id="app"></div>
+    <script type="text/babel">
+        /**
+         * Hook概念及Hook之useState函数：
+         * 
+         * Hook是React 16.8的新增特性。它可以让你在不编写class的情况下使用state以及其他的React特性
+         * 
+         * Hook是一个特殊的函数，它可以让你“钩入”React的特性。例如，useState是允许你在React函数组件中添加state的Hook
+        */
+
+        let app = document.querySelector('#app');
+        let root = ReactDOM.createRoot(app);
+        let { useState, useEffect } = React;
+        let { flushSync } = ReactDOM;
+
+        let Welcome = (props) => {
+            /**
+             * 函数组件的state跟类组件的state很类似，但是也有区别
+             * 惰性初始state，useState()添加回调函数
+             * 只能在最顶层使用Hook，只能在函数组件中使用Hook
+            */
+            //  Hook具备批处理的能力
+            //  使用flushSync取消Hook的批处理能力
+            /* 同一个Hook在同一个组件多次调用后面的结果会进行覆盖，并不能实现累积
+               要想实现累积，需要写成回调函数的形式 
+            */
+
+            //  初始需要大量计算的情况，可以写成一个回调函数，这样可以惰性加载函数，只让函数调用一次
+            const initCount = () => {
+                console.log('initCount');
+                return 2*2*2
+            }
+            const [ count, setCount ] = useState(() => {
+                return initCount()
+            })
+            const [ msg, setMsg ] = useState('hello')
+
+            // 默认不具备自动合并的能力
+            // const [ info, setInfo ] = useState({
+            //     username: 'xiaoming',
+            //     age: 20
+            // })
+            // setInfo({
+            //     ...info,
+            //     username: 'xiaoqiang'
+            // })
+            
+            const handleClick = () => {
+                // flushSync(() => {
+                //     setCount(count + 1) 
+                // })
+                // flushSync(() => {
+                //     setMsg('hi')
+                // })
+                // setCount(count + 1)
+                // setCount(count + 1)
+                // setCount(count + 1) // count结果为1
+
+                // setCount((count) => count + 1)
+                // setCount((count) => count + 1)
+                // setCount((count) => count + 1) // count结果为3
+
+                // 既然要进行自动批处理操作，所以函数是异步的
+                // useState()：对应响应式数据的修改函数是没有第二个参数的，所以要监听数据改变后的时机，
+                // 在函数组件中是通过 useEffect() 来实现的
+
+                // setCount(count + 1, () => {
+                //     console.log(count);
+                // }) 会报错，拿不到count的值
+                // console.log(count);
+
+                setCount(count + 1)
+            }
+            console.log(123);
+            return (
+                <div>
+                    <button onClick={handleClick}>点击</button>
+                    <div>hello world, {count}, {msg}</div>
+                </div>
+            );
+        }
+
+        let element = (
+            <Welcome />
+        )
+        root.render(element);
+    </script>
+</body>
+</html>

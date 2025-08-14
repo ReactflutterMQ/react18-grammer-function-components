@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../react.development.js"></script>
+    <script src="../react-dom.development.js"></script>
+    <script src="../babel.min.js"></script>
+    <script src="../prop-types.js"></script>
+</head>
+<body>
+    <div id="app"></div>
+    <script type="text/babel">
+        let app = document.querySelector('#app');
+        let root = ReactDOM.createRoot(app);
+
+        // class Welcome extends React.Component {
+        //     render() {
+        //         return (
+        //             <div>hello world</div>
+        //         );
+        //     }
+        // }
+
+
+
+        // 函数组件
+        let Welcome = ({ num = 234 }) => {
+            const handleClick = () => {
+                console.log(num);
+            }
+            return (
+                <div>
+                    <button onClick={handleClick}>点击</button>
+                    <div>hello world, {num}</div>
+                </div>
+            )
+        }
+        // Welcome.defaultProps = {//设置num默认值
+        //     num: 234
+        // }
+        Welcome.propTypes = {//设置num类型
+            num: PropTypes.number
+        }
+        let element = (
+            <Welcome num={234} />
+        )
+        root.render(element);
+    </script>
+</body>
+</html>
