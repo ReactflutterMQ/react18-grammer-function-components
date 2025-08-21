@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../react.development.js"></script>
+    <script src="../react-dom.development.js"></script>
+    <script src="../babel.min.js"></script>
+    <script src="../prop-types.js"></script>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script type="text/babel">
+        let app = document.querySelector('#app');
+        let root = ReactDOM.createRoot(app);
+        let { useReducer } = React;
+
+        const state = {
+            login: true,
+            logout: false
+        }
+
+        const loginReducer = (state, action) => {
+            switch (action.type) {
+                case 'login':
+                    return { login: true, logout: false}
+                case 'logout':
+                    return { login: false, logout: true}
+                default:
+                    throw new Error()
+            }
+        }
+
+        let Welcome = (props) => {
+            /**
+             * 1、useState的替代方案。它接收一个形如(state, action) =>
+             * newState的reducer，并返回当前的state以及与其配套的dispatch方法
+             * 
+             * 2、在某些场景下，useReducer会比useState更适用，例如
+             * state逻辑较复杂且包含多个子值，或者下一个state依赖于值钱的state等。
+            */
+            // const [login, setLogin] = useState(true);
+            // const [logout, setLogout] = useState(false);
+
+            const [ loginState, loginDispatch ] = useReducer(loginReducer, state)
+
+            const handleLogout = () => {
+                loginDispatch({ type: 'logout' })
+            }
+
+            const handleLogin = () => {
+                loginDispatch({ type: 'login' })
+            }
+
+            return (
+                <div>
+                    {
+                        loginState.login ? <button onClick={handleLogout}>退出</button> 
+                        : <button onClick={handleLogin}>登录</button>
+                    }
+                </div>
+            );
+        }
+
+        let element = (
+            <Welcome />
+        )
+        root.render(element);
+    </script>
+</body>
+
+</html>

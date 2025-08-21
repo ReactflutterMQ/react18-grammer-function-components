@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../react.development.js"></script>
+    <script src="../react-dom.development.js"></script>
+    <script src="../babel.min.js"></script>
+    <script src="../prop-types.js"></script>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script type="text/babel">
+        let app = document.querySelector('#app');
+        let root = ReactDOM.createRoot(app);
+        let { useState } = React;
+
+        /**
+         * React.memo类似于纯组件，可提高组件的性能表现（当依赖的数据没有发生改变，则不会重新执行render渲染）
+        */
+        let Welcome = (props) => {
+            const [ count, setCount ] = useState(0);
+            const handleClick = () => {
+                setCount(count + 1);
+                // setCount(1);//render只会执行一次
+            }
+            // console.log(123);
+            return (
+                <div>
+                    <button onClick={handleClick}>点击</button>
+                    hello Welcome
+                    <Head count={count} />
+                </div>
+            );
+        }
+
+        let Head = React.memo(() => {
+            return (
+                <div>hello Head, { Math.random() }</div>
+            )
+        })
+
+        let element = (
+            <Welcome />
+        )
+        root.render(element);
+    </script>
+</body>
+
+</html>

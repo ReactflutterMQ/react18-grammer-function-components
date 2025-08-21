@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../react.development.js"></script>
+    <script src="../react-dom.development.js"></script>
+    <script src="../babel.min.js"></script>
+    <script src="../prop-types.js"></script>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script type="text/babel">
+        let app = document.querySelector('#app');
+        let root = ReactDOM.createRoot(app);
+        let { memo, useState, useDeferredValue } = React;
+
+        let List = memo(({ query }) => {
+            const text = 'hello world'
+            const Items = []
+
+            if (query.trim() !== '' && text.includes(query)) {
+                const arr = text.split(query);
+                for(let i = 0; i < 10000; i++) {
+                    Items.push(<li key={i}>{arr[0]}<span style={{color: 'red',fontSize: '18px'}}>{query}</span>{arr[1]}</li>)
+                }
+            } else {
+                for(let i = 0;i < 10000; i++) {
+                    Items.push(<li key={i}>{text}</li>)
+                }
+            }
+            return (
+                <ul>{Items}</ul>
+            )
+        })
+
+        let Welcome = (props) => {
+            const [ searchWord, setSearchWord ] = useState('');
+            const query = useDeferredValue(searchWord) //延迟加载
+            const handleChange = (ev) => {
+                setSearchWord(ev.target.value); //第一个任务
+            }
+            return (
+                <div>
+                    <input type="text" value={searchWord} onChange={handleChange} />
+                    <List query={query} />
+                </div>
+            );
+        }
+
+        let element = (
+            <Welcome />
+        )
+        root.render(element);
+    </script>
+</body>
+
+</html>

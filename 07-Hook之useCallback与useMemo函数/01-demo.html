@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../react.development.js"></script>
+    <script src="../react-dom.development.js"></script>
+    <script src="../babel.min.js"></script>
+    <script src="../prop-types.js"></script>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script type="text/babel">
+        let app = document.querySelector('#app');
+        let root = ReactDOM.createRoot(app);
+        let { useState, useCallback, useMemo } = React;
+
+        /**
+        * useCallback返回一个可记忆的函数
+        * 
+        * useMemo返回一个可记忆的值，useCallback只是 useMemo
+        * 的一种特殊形式
+        */
+        let Welcome = (props) => {
+            const [ count, setCount ] = useState(0);
+            const handleClick = () => {
+                setCount(count + 1);
+                // setCount(1);//render只会执行一次
+            }
+
+            // useCallback返回一个可记忆的函数
+            const foo = useCallback(() => {}, [])
+            // 函数可以用useMemo改写
+            // const foo = useMemo(() => () => {}, [])
+
+            // const bar = [1, 2, 3] // 每次render都会重新创建并且分配不同的内存地址
+            // const bar = useMemo(() => [1, 2, 3], [])
+
+            return (
+                <div>
+                    <button onClick={handleClick}>点击</button>
+                    hello Welcome
+                    <Head onClick={foo} />
+                </div>
+            );
+        }
+
+        let Head = React.memo(() => {
+            return (
+                <div>hello Head, { Math.random() }</div>
+            )
+        })
+
+        let element = (
+            <Welcome />
+        )
+        root.render(element);
+    </script>
+</body>
+
+</html>

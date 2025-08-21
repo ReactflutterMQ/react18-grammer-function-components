@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../react.development.js"></script>
+    <script src="../react-dom.development.js"></script>
+    <script src="../babel.min.js"></script>
+    <script src="../prop-types.js"></script>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script type="text/babel">
+        let app = document.querySelector('#app');
+        let root = ReactDOM.createRoot(app);
+        let { memo, useState, useTransition } = React;
+
+        /**
+         * 1、useTransition返回一个状态值表示过渡任务的等待状态，以及
+         * 一个启动该过渡任务的函数
+         * 
+         * 2、useDeferredValue接受一个值，并返回该值的新副本，该副本
+         * 将推迟到更紧急的更新之后
+        */
+        let List = memo(({ query }) => {
+            const text = 'hello world'
+            const Items = []
+
+            if (query.trim() !== '' && text.includes(query)) {
+                const arr = text.split(query);
+                for(let i = 0; i < 10000; i++) {
+                    Items.push(<li key={i}>{arr[0]}<span style={{color: 'red',fontSize: '18px'}}>{query}</span>{arr[1]}</li>)
+                }
+            } else {
+                for(let i = 0;i < 10000; i++) {
+                    Items.push(<li key={i}>{text}</li>)
+                }
+            }
+            return (
+                <ul>{Items}</ul>
+            )
+        })
+
+        let Welcome = (props) => {
+            const [ searchWord, setSearchWord ] = useState('');
+            const [ query, setQuery ] = useState('');
+            const [ pending, startTransition ] = useTransition()
+            const handleChange = (ev) => {
+                setSearchWord(ev.target.value); //第一个任务
+
+                startTransition(() => {
+                    setQuery(ev.target.value);      //第二个任务
+                })
+            }
+            return (
+                <div>
+                    <input type="text" value={searchWord} onChange={handleChange} />
+                    { pending ? <div>loading...</div> : <List query={query} /> }
+                </div>
+            );
+        }
+
+        let element = (
+            <Welcome />
+        )
+        root.render(element);
+    </script>
+</body>
+
+</html>
