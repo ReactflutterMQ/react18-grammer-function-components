@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    *{margin: 0; padding: 0;}
+    li{ list-style: none;height: 36px;}
+    .wrapper{ width: 200px; margin: 30px auto;}
+    .wrapper i{ font-size: 30px}
+    .wrapper i.active{ color: red}
+    .content {display: flex;align-items: center;gap: 6px;}
+    .icon-dianzan {cursor: pointer;}
+  </style>
+   <link rel="stylesheet" href="../img/iconfont.css">
+  <script src="../react.development.js"></script>
+  <script src="../react-dom.development.js"></script>
+  <script src="../babel.min.js"></script>
+  <script src="../lodash.min.js"></script>
+</head>
+<body>
+  <div id="app"></div>
+  <script type="text/babel">
+    let app = document.querySelector('#app');
+    let root = ReactDOM.createRoot(app);
+    let { useState } = React;
+    let Welcome = () => {
+      const [list, setList] = useState([
+        {id: 1, num: 50, checked: false},
+        {id: 2, num: 25, checked: true},
+        {id: 3, num: 67, checked: false}
+      ])
+      const zan = (id) => {
+        return () => {
+            const newList = _.cloneDeep(list);
+            const now = newList.find(v => v.id === id)
+            now.checked = !now.checked;
+            now.num = now.checked ? now.num + 1 : now.num - 1;
+            setList(newList)
+        }
+      }
+      return (
+        <ul className="wrapper">
+          {
+            list.map((v)=> <li key={v.id}><Like {...v} zan={zan} /></li>)
+          }
+        </ul>
+      )
+    }
+    let Like = (props) => {
+        const { id, num, checked, zan } = props;
+        return (
+            <div className="content">
+                <i className="iconfont icon-dianzan" 
+                    style={{color: checked ? 'red' : ''}}
+                    onClick={zan(id)}
+                />
+                <span>{num}</span>
+            </div>
+        )
+    }
+    let element = (
+      <Welcome />
+    );
+    root.render(element)
+  </script>
+</body>
+</html>
